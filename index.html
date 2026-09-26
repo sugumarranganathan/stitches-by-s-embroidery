@@ -10,24 +10,90 @@
       box-sizing: border-box;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
+      min-height: 100vh;
       background: #ffffff;
-      font-family: Arial, Helvetica, sans-serif;
       color: #111111;
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Soft animated background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -30%;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 105, 180, 0.12), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(120, 90, 255, 0.10), transparent 28%),
+        radial-gradient(circle at 50% 85%, rgba(255, 190, 80, 0.10), transparent 30%);
+      animation: backgroundMove 14s ease-in-out infinite alternate;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(
+        115deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.65) 48%,
+        transparent 56%
+      );
+      transform: translateX(-120%);
+      animation: lightSweep 9s ease-in-out infinite;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 20px 60px;
+      padding: 55px 20px 70px;
     }
 
+    /* Animated heading */
     h1 {
+      position: relative;
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto 42px;
       text-align: center;
-      margin: 0 0 35px;
-      font-size: 32px;
+      font-size: clamp(27px, 4vw, 40px);
+      line-height: 1.2;
       font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(
+        90deg,
+        #111111,
+        #7b2cff,
+        #e91e63,
+        #111111
+      );
+      background-size: 300% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: headingGradient 5s linear infinite, headingFloat 3.5s ease-in-out infinite;
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -13px;
+      width: 70px;
+      height: 3px;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #7b2cff, #e91e63);
+      transform: translateX(-50%);
+      animation: underlinePulse 2s ease-in-out infinite;
     }
 
     .gallery {
@@ -36,42 +102,250 @@
       gap: 30px;
     }
 
+    /* Image cards */
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.07);
+      opacity: 0;
+      transform: translateY(35px) scale(0.97);
+      animation: cardReveal 0.9s cubic-bezier(.2,.8,.2,1) forwards;
+      transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease,
+        border-color 0.4s ease;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.15s; }
+    .card:nth-child(2) { animation-delay: 0.30s; }
+    .card:nth-child(3) { animation-delay: 0.45s; }
+    .card:nth-child(4) { animation-delay: 0.60s; }
+
+    .card:hover {
+      transform: translateY(-8px) scale(1.015);
+      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.14);
+      border-color: rgba(123, 44, 255, 0.35);
+    }
+
+    .image-wrap {
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+    }
+
     .gallery img {
       display: block;
       width: 100%;
       height: auto;
-      border: 1px solid #e5e5e5;
-      background: #fff;
+      border: 0;
+      transition: transform 0.7s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .card:hover img {
+      transform: scale(1.035);
+    }
+
+    /* Animated thread/light sweep across each image */
+    .image-wrap::after {
+      content: "";
+      position: absolute;
+      top: -20%;
+      left: -65%;
+      width: 28%;
+      height: 140%;
+      pointer-events: none;
+      background: linear-gradient(
+        100deg,
+        transparent,
+        rgba(255, 255, 255, 0.60),
+        transparent
+      );
+      transform: skewX(-18deg);
+      animation: imageSweep 5.5s ease-in-out infinite;
+    }
+
+    .card:nth-child(2) .image-wrap::after {
+      animation-delay: 1.2s;
+    }
+
+    .card:nth-child(3) .image-wrap::after {
+      animation-delay: 2.4s;
+    }
+
+    .card:nth-child(4) .image-wrap::after {
+      animation-delay: 3.6s;
+    }
+
+    /* Small animated number badge */
+    .badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 2;
+      padding: 7px 11px;
+      border-radius: 20px;
+      color: #ffffff;
+      background: rgba(17, 17, 17, 0.78);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(6px);
+      animation: badgePulse 2.5s ease-in-out infinite;
     }
 
     @media (max-width: 700px) {
       .container {
-        padding: 25px 12px 40px;
+        padding: 32px 12px 45px;
       }
 
       h1 {
-        font-size: 25px;
-        margin-bottom: 25px;
+        margin-bottom: 32px;
       }
 
       .gallery {
         grid-template-columns: 1fr;
         gap: 20px;
       }
+
+      .card:hover {
+        transform: translateY(-4px) scale(1.01);
+      }
+    }
+
+    /* Respect accessibility settings */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .card {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes backgroundMove {
+      0% {
+        transform: translate3d(-2%, -1%, 0) scale(1);
+      }
+      100% {
+        transform: translate3d(2%, 2%, 0) scale(1.08);
+      }
+    }
+
+    @keyframes lightSweep {
+      0%, 45% {
+        transform: translateX(-120%);
+      }
+      70%, 100% {
+        transform: translateX(120%);
+      }
+    }
+
+    @keyframes headingGradient {
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 300% 50%;
+      }
+    }
+
+    @keyframes headingFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    @keyframes underlinePulse {
+      0%, 100% {
+        width: 70px;
+        opacity: 0.7;
+      }
+      50% {
+        width: 110px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes cardReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes imageSweep {
+      0%, 45% {
+        left: -65%;
+      }
+      70%, 100% {
+        left: 140%;
+      }
+    }
+
+    @keyframes badgePulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.04);
+      }
     }
   </style>
 </head>
 
 <body>
+
   <main class="container">
     <h1>Stitches by S — Embroidery Designs</h1>
 
-    <div class="gallery">
-      <img src="777.png" alt="Stitches by S Embroidery Design 777">
-      <img src="778.png" alt="Stitches by S Embroidery Design 778">
-      <img src="779.png" alt="Stitches by S Embroidery Design 779">
-      <img src="780.png" alt="Stitches by S Embroidery Design 780">
-    </div>
+    <section class="gallery">
+
+      <div class="card">
+        <div class="image-wrap">
+          <span class="badge">SBEMB-777</span>
+          <img src="777.png" alt="Stitches by S Embroidery Design 777">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="image-wrap">
+          <span class="badge">SBEMB-778</span>
+          <img src="778.png" alt="Stitches by S Embroidery Design 778">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="image-wrap">
+          <span class="badge">SBEMB-779</span>
+          <img src="779.png" alt="Stitches by S Embroidery Design 779">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="image-wrap">
+          <span class="badge">SBEMB-780</span>
+          <img src="780.png" alt="Stitches by S Embroidery Design 780">
+        </div>
+      </div>
+
+    </section>
   </main>
+
 </body>
 </html>
